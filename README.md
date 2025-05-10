@@ -37,6 +37,8 @@ The Feynman Technique helps you learn by teaching. Instead of just watching pass
     <p align="center"><img src="assets/create_feynman.png" alt="Copying Feynman Prompt to Clipboard" width="400"/></p>
     The prompt guides your LLM to create a single, insightful question based on the subtitles.
 
+(big shout-out to Professor Macauley for his amazing lecture series on [Visual Group Theory](https://www.youtube.com/playlist?list=PLwV-9DG53NDxU337smpTwm6sef4x-SCLv), highly recommended! )
+
 ## Getting Started 🏁
 
 **1. Prerequisites:**
