@@ -23,6 +23,10 @@ This Flask app helps you:
 *   **CSV Driven:** Manage your courses easily with `lectures.csv`.
 *   **Automatic CSV Sync:** Optional: Keep `lectures.csv` updated from a remote URL.
 
+## Why Feynman?
+
+The Feynman Technique helps you learn by teaching. Instead of just watching passively, this tool prompts you to *explain what you learned*—forcing clarity and exposing gaps. After each lecture, generate a question that tests whether you truly understand the material, not just remember it.
+
 ## Quick Demo 🚀
 
 1.  **Select New Lecture to Watch:**
