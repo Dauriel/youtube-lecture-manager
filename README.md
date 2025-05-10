@@ -36,9 +36,11 @@ This Flask app helps you:
 ## Getting Started 🏁
 
 **1. Prerequisites:**
+
     - Python 3.7+
     - `yt-dlp` (for YouTube features) - [Install Guide](https://github.com/yt-dlp/yt-dlp#installation)
     - A browser (like Firefox) for `yt-dlp` cookie access.
+
 
 **2. Setup:**
    ```bash
