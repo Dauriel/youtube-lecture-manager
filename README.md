@@ -26,10 +26,10 @@ This Flask app helps you:
 ## Quick Demo 🚀
 
 1.  **Select New Lecture to Watch:**
-2.  <p align="center"><img src="assets/next_lecture.png" alt="Lecture Display for Review" width="400"/></p>
-3.  **Select Lecture for Review & Get Subtitles:**
+    <p align="center"><img src="assets/next_lecture.png" alt="Lecture Display for Review" width="400"/></p>
+2.  **Select Lecture for Review & Get Subtitles:**
     <p align="center"><img src="assets/review_lecture.png" alt="Lecture Display for Review" width="400"/></p>
-4.  **Generate Feynman Question Prompt for LLM:**
+3.  **Generate Feynman Question Prompt for LLM:**
     <p align="center"><img src="assets/create_feynman.png" alt="Copying Feynman Prompt to Clipboard" width="400"/></p>
     The prompt guides your LLM to create a single, insightful question based on the subtitles.
 
