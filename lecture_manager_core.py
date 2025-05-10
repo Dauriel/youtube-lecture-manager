@@ -13,7 +13,7 @@ import tempfile # For creating a temporary directory for subtitles
 
 
 # --- Configuration ---
-download_last_version()
+download_last_version() #comment this line if you want to just have local copy of your lectures.csv. I use this paired with google sheets
 CSV_FILE = "lectures.csv"
 DB_FILE = "lecture_subtitles.db"
 YT_DLP_PATH = "yt-dlp"  # Or full path if not in PATH
