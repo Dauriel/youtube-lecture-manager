@@ -43,8 +43,8 @@ This Flask app helps you:
 **2. Setup:**
    ```bash
    # Clone the repository
-   git clone <your-repository-url>
-   cd <repository-name>
+   git clone https://github.com/Dauriel/youtube-lecture-manager
+   cd youtube-lecture-manager
 
    # Create and activate a virtual environment (recommended)
    python -m venv venv
