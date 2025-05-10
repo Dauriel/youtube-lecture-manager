@@ -1,0 +1,155 @@
+<!-- templates/lecture_display.html -->
+{% extends "base.html" %}
+
+{% block title %}
+    {% if action_type == "watch" %}Watch Lecture{% else %}Review Lecture{% endif %} - Lecture Manager
+{% endblock %}
+
+{% block content %}
+    {% if lecture and "error" not in lecture %}
+        <h2>
+            {% if action_type == "watch" %}Next Lecture to Watch{% else %}Lecture for Review{% endif %}
+        </h2>
+        <div class="lecture-details">
+            <h4>{{ lecture.series_title }}</h4>
+            <p><strong>Video Title:</strong> {{ lecture.video_title }}</p>
+            <p><strong>Link:</strong> <a href="{{ lecture.video_url }}" target="_blank">{{ lecture.video_url }}</a></p>
+
+            {% if action_type == "review" %}
+                {% if lecture.subtitles_exist_in_db and lecture.subtitles %}
+                    <p><strong>Subtitles Status:</strong> Available in local DB.</p>
+                    <h5>Subtitles:</h5>
+                    <div class="subtitles-box mb-3">
+                        {{ lecture.subtitles }}
+                    </div>
+
+                    <!-- Feynman Prompt and Copy Button -->
+                    <div class="feynman-prompt-section mt-3 p-3 border rounded bg-light">
+                        <h5>Generate Feynman Question for LLM</h5>
+                        <p>Click the button to copy a prompt with the subtitles to your clipboard. Paste it into your favorite LLM to generate a single, insightful question based on the Feynman technique for this lecture's content.</p>
+                        
+                        <button class="btn btn-info btn-sm" onclick="copyFeynmanPrompt(this)">Copy Prompt & Subtitles</button>
+                        
+                        <textarea id="feynmanPromptContent" style="display: none;">
+Explain the core concepts of the following lecture material as if you were teaching it to a 12-year-old. Identify the most crucial single concept or connection that, if misunderstood, would hinder understanding the rest. Based on this, formulate one single, concise, and insightful question that a student should be able to answer to demonstrate they have grasped this key aspect. The question should encourage critical thinking or application, not just recall.
+
+Lecture Subtitles:
+---
+{{ lecture.subtitles }}
+---
+
+Your one question:
+                        </textarea>
+                        <small class="text-success" id="copyStatus" style="display: none; margin-left: 10px;">Copied to clipboard!</small>
+                    </div>
+                    <!-- End Feynman Prompt and Copy Button -->
+
+                {% elif lecture.subtitles_exist_in_db and not lecture.subtitles %}
+                     <p><strong>Subtitles Status:</strong> Available in local DB, but not loaded for display. This might indicate an issue or the subtitles are empty.</p>
+                     <!-- Optionally, still allow download if subtitles are empty or an error occurred loading them -->
+                     <form action="{{ url_for('download_review_subtitle') }}" method="POST" class="mt-2">
+                        <input type="hidden" name="series_title" value="{{ lecture.series_title }}">
+                        <input type="hidden" name="video_title" value="{{ lecture.video_title }}">
+                        <input type="hidden" name="video_url" value="{{ lecture.video_url }}">
+                        <input type="hidden" name="video_playlist_index" value="{{ lecture.playlist_index }}">
+                        <input type="hidden" name="playlist_url" value="{{ lecture.playlist_url }}">
+                        <button type="submit" class="btn btn-sm btn-warning">Re-attempt Subtitle Fetch/Download</button>
+                    </form>
+                {% else %}
+                    <p><strong>Subtitles Status:</strong> Not found in local DB.</p>
+                    <form action="{{ url_for('download_review_subtitle') }}" method="POST">
+                        <input type="hidden" name="series_title" value="{{ lecture.series_title }}">
+                        <input type="hidden" name="video_title" value="{{ lecture.video_title }}">
+                        <input type="hidden" name="video_url" value="{{ lecture.video_url }}">
+                        <input type="hidden" name="video_playlist_index" value="{{ lecture.playlist_index }}">
+                        <input type="hidden" name="playlist_url" value="{{ lecture.playlist_url }}">
+                        <button type="submit" class="btn btn-sm btn-warning">Download Subtitles for this Video</button>
+                    </form>
+                {% endif %}
+            {% endif %}
+
+            {# New section for "Watch Next Lecture" if subtitles are available #}
+            {% if action_type == "watch" and lecture.subtitles_exist_in_db and lecture.subtitles %}
+                <hr>
+                <p><strong>Subtitles Status:</strong> Available in local DB (likely from a previous review/download).</p>
+                <h5>Subtitles:</h5>
+                <div class="subtitles-box mb-3">
+                    {{ lecture.subtitles }}
+                </div>
+                <!-- Feynman Prompt and Copy Button -->
+                <div class="feynman-prompt-section mt-3 p-3 border rounded bg-light">
+                    <h5>Generate Feynman Question for LLM</h5>
+                    <p>Click the button to copy a prompt with the subtitles to your clipboard. Paste it into your favorite LLM to generate a single, insightful question based on the Feynman technique for this lecture's content.</p>
+                    
+                    <button class="btn btn-info btn-sm" onclick="copyFeynmanPrompt(this)">Copy Prompt & Subtitles</button>
+                    
+                    <textarea id="feynmanPromptContentWatch" style="display: none;">
+Explain the core concepts of the following lecture material as if you were teaching it to a 12-year-old. Identify the most crucial single concept or connection that, if misunderstood, would hinder understanding the rest. Based on this, formulate one single, concise, and insightful question that a student should be able to answer to demonstrate they have grasped this key aspect. The question should encourage critical thinking or application, not just recall.
+
+Lecture Subtitles:
+---
+{{ lecture.subtitles }}
+---
+
+Your one question:
+                    </textarea>
+                    <small class="text-success" id="copyStatusWatch" style="display: none; margin-left: 10px;">Copied to clipboard!</small>
+                </div>
+                <!-- End Feynman Prompt and Copy Button -->
+            {% elif action_type == "watch" and lecture.subtitles_exist_in_db and not lecture.subtitles %}
+                <hr>
+                <p><strong>Subtitles Status:</strong> Available in local DB (likely from a previous review/download), but not loaded for display.</p>
+            {% elif action_type == "watch" and not lecture.subtitles_exist_in_db %}
+                 <hr>
+                 <p><strong>Subtitles Status:</strong> Not yet available for this new lecture. You can try downloading them after marking it for review.</p>
+            {% endif %}
+
+
+        </div>
+    {% elif lecture and "error" in lecture %}
+        <div class="alert alert-danger">
+            <strong>Error:</strong> {{ lecture.error }}
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            No lecture information to display.
+        </div>
+    {% endif %}
+    <p class="mt-3"><a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Back to Dashboard</a></p>
+
+<script>
+function copyFeynmanPrompt(buttonElement) {
+    // Find the textarea relative to the button clicked, in case of multiple on the page
+    const promptSection = buttonElement.closest('.feynman-prompt-section');
+    if (!promptSection) {
+        console.error("Could not find parent prompt section for button:", buttonElement);
+        return;
+    }
+    const textArea = promptSection.querySelector('textarea');
+    const statusElement = promptSection.querySelector('small[id^="copyStatus"]');
+
+
+    if (!textArea || !statusElement) {
+        console.error("Could not find textarea or status element within section:", promptSection);
+        return;
+    }
+
+    textArea.style.display = 'block'; // Temporarily show to select
+    textArea.select();
+    textArea.setSelectionRange(0, 99999); // For mobile devices
+
+    try {
+        document.execCommand('copy');
+        statusElement.style.display = 'inline';
+        setTimeout(() => {
+            statusElement.style.display = 'none';
+        }, 2000); // Hide status message after 2 seconds
+    } catch (err) {
+        console.error('Failed to copy text: ', err);
+        alert('Failed to copy. Please try selecting and copying manually.');
+    }
+    textArea.style.display = 'none'; // Hide again
+    window.getSelection().removeAllRanges(); // Deselect
+}
+</script>
+{% endblock %}

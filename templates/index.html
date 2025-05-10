@@ -1,0 +1,69 @@
+<!-- templates/index.html -->
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Lecture Manager{% endblock %}
+
+{% block content %}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Lecture Series Statistics</h5>
+                    <p class="card-text">Total series in <code>lectures.csv</code>: <strong>{{ num_series }}</strong></p>
+                    <p class="card-text">YouTube playlist series: <strong>{{ num_yt_series }}</strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Data Management</h5>
+                    <form action="{{ url_for('refresh_csv') }}" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-info btn-sm">Refresh CSV Data</button>
+                    </form>
+                    <p class="card-text_ mt-2"><small>Reloads <code>lectures.csv</code>. Use if you've updated the file.</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+
+    <h2>Actions</h2>
+    <div class="action-buttons mt-3">
+        <div class="mb-3 p-3 border rounded">
+            <h4>Watch Next Lecture</h4>
+            <p>Select a random unwatched lecture from an eligible YouTube playlist series.</p>
+            <form action="{{ url_for('select_to_watch') }}" method="POST">
+                <button type="submit" class="btn btn-primary btn-lg">Select Next Lecture to Watch</button>
+            </form>
+        </div>
+
+        <div class="mb-3 p-3 border rounded">
+            <h4>Review a Watched Lecture</h4>
+            <p>Select a random watched lecture from a YouTube playlist series for review. Subtitles may be available or can be downloaded.</p>
+            <form action="{{ url_for('select_for_review') }}" method="POST">
+                <button type="submit" class="btn btn-secondary btn-lg">Select Lecture for Review</button>
+            </form>
+        </div>
+
+        <div class="mb-3 p-3 border rounded bg-light">
+            <h4>Subtitle Management</h4>
+            <p>Download subtitles for videos. Requires <code>yt-dlp</code> to be functional.</p>
+            <form action="{{ url_for('bulk_download_subtitles') }}" method="POST" onsubmit="return confirm('This may take a long time and consume network bandwidth. Are you sure you want to proceed?');">
+                <button type="submit" class="btn btn-warning">Bulk Download Watched Subtitles</button>
+            </form>
+            <small class="form-text text-muted">
+                Attempts to download subtitles for all videos marked as 'watched' in YouTube playlists if not already in the database.
+                Check server logs for detailed progress.
+            </small>
+        </div>
+    </div>
+
+    {% if not yt_dlp_ready %}
+    <div class="alert alert-danger mt-4" role="alert">
+        <strong>Critical System Alert:</strong> <code>yt-dlp</code> is not detected or not working. Subtitle-related features (including selecting lectures from playlists and downloading subtitles) will likely fail. Please check your <code>yt-dlp</code> installation and the server logs.
+    </div>
+    {% endif %}
+
+{% endblock %}
