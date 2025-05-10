@@ -1,6 +1,6 @@
 # Youtube Lecture Playlist Progress Manager & Feynman Question Generator
 
-I built this tool to better manage my YouTube lecture progress and improve my active learning. It lets me quickly generate Feynman-style prompts from subtitles to get deep review questions from an LLM.
+I built this small tool to better manage my YouTube lecture progress and improve my active learning. It lets me quickly generate Feynman-style prompts from subtitles to get deep review questions from an LLM.
 
 
 <p align="center">
