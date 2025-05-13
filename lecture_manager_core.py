@@ -157,10 +157,21 @@ def clean_vtt_content(vtt_string: str) -> str:
     # Add any remaining text from the last cue
     if current_cue_text:
         cleaned_lines.append(" ".join(current_cue_text))
+    cleaned_lines_final = []
 
+    for i in range(len(cleaned_lines)-1):
+        # Remove any leading/trailing whitespace and filter out empty lines
+        line = cleaned_lines[i].strip()
+        line = line.strip()
+        if line:
+            if line in cleaned_lines[i+1]:
+                # If the current line is a substring of the next line, skip it
+                continue
+            cleaned_lines_final.append(line)
+        
     # Join all cue texts with a space, and remove any leading/trailing whitespace from the final string.
     # Also filter out any "empty" lines that might have resulted from cues with only tags.
-    return "\n".join(filter(None, cleaned_lines)).strip()
+    return "\n".join(filter(None, cleaned_lines_final)).strip()
 
 def download_subtitles_yt_dlp(video_url: str) -> Optional[str]:
     if not video_url or not ("youtube.com/watch?v=" in video_url or "youtu.be/" in video_url):
